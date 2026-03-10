@@ -1,0 +1,1893 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World Cup 2026 Score Board</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0f172a;
+        --bg-light: #1e293b;
+        --card: rgba(30, 41, 59, 0.85);
+        --border: #334155;
+        --accent: #f59e0b;
+        --accent-hover: #fbbf24;
+        --accent-glow: rgba(245, 158, 11, 0.4);
+        --secondary: #06b6d4;
+        --secondary-glow: rgba(6, 182, 212, 0.3);
+        --fg: #f1f5f9;
+        --muted: #94a3b8;
+        --success: #10b981;
+        --danger: #ef4444;
+        --body-text: #f1f5f9;
+      }
+
+      [data-theme="light"] {
+        --bg: #f8fafc;
+        --bg-light: #e2e8f0;
+        --card: rgba(255, 255, 255, 0.9);
+        --border: #cbd5e1;
+        --accent: #d97706;
+        --accent-glow: rgba(217, 119, 6, 0.3);
+        --secondary: #0891b2;
+        --secondary-glow: rgba(8, 145, 178, 0.2);
+        --fg: #1e293b;
+        --muted: #64748b;
+        --success: #059669;
+        --danger: #dc2626;
+        --body-text: #1e293b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg);
+        color: var(--body-text);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1920&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.08;
+        z-index: -2;
+        filter: grayscale(100%);
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(
+            circle at top right,
+            var(--secondary-glow),
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at bottom left,
+            var(--accent-glow),
+            transparent 50%
+          );
+        z-index: -1;
+        opacity: 0.5;
+      }
+
+      .font-display {
+        font-family: "Bebas Neue", sans-serif;
+      }
+      .card {
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .input-score {
+        background: rgba(0, 0, 0, 0.2);
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        color: var(--fg);
+        font-weight: 700;
+        text-align: center;
+        width: 44px;
+        height: 36px;
+        font-size: 0.9rem;
+      }
+      .input-score:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px var(--accent-glow);
+      }
+      .input-score:disabled {
+        background: rgba(0, 0, 0, 0.4);
+        color: var(--muted);
+      }
+
+      [data-theme="light"] .input-score {
+        background: rgba(255, 255, 255, 0.5);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      [data-theme="light"] .input-generic,
+      [data-theme="light"] .input-schedule,
+      [data-theme="light"] .input-stadium {
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--fg);
+        border-color: var(--border);
+      }
+
+      .input-generic {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--fg);
+        padding: 4px 8px;
+        font-size: 0.85rem;
+        width: 100%;
+      }
+      .input-generic:focus {
+        outline: none;
+        border-color: var(--secondary);
+        background: rgba(0, 0, 0, 0.4);
+      }
+
+      .input-schedule {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--fg);
+        font-size: 0.7rem;
+        padding: 2px 4px;
+      }
+      .input-stadium {
+        background: rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--fg);
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        width: 100%;
+      }
+
+      .btn-tab {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 8px 16px;
+        border-radius: 9999px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.8rem;
+      }
+      .btn-tab:hover {
+        border-color: var(--accent);
+        color: var(--fg);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .btn-tab.active {
+        background: linear-gradient(135deg, var(--accent), #d97706);
+        border-color: transparent;
+        color: #000;
+        box-shadow: 0 4px 15px var(--accent-glow);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);
+        color: #000;
+        font-weight: 700;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px var(--accent-glow);
+      }
+
+      .btn-icon {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+      .btn-icon:hover {
+        color: var(--accent);
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .header-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        color: var(--fg);
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.75rem;
+      }
+      .header-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--accent);
+      }
+      .header-btn.save {
+        background: linear-gradient(135deg, var(--success), #059669);
+        border-color: transparent;
+        color: white;
+      }
+
+      .standing-row {
+        display: grid;
+        grid-template-columns: 30px 1fr 35px 35px 35px 35px 40px;
+        gap: 6px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        align-items: center;
+        font-size: 0.8rem;
+      }
+      .standing-row.header {
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--muted);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+      }
+      .standing-row.qualified {
+        background: rgba(16, 185, 129, 0.15);
+        border-left: 3px solid var(--success);
+      }
+
+      .flag-icon {
+        width: 22px;
+        height: 16px;
+        border-radius: 2px;
+        object-fit: cover;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        vertical-align: middle;
+        display: inline-block;
+        flex-shrink: 0;
+        background: #ccc;
+      }
+      .flag-icon-large {
+        width: 40px;
+        height: 28px;
+        border-radius: 4px;
+      }
+
+      .schedule-card {
+        background: linear-gradient(
+          100deg,
+          rgba(30, 41, 59, 0.9) 0%,
+          rgba(15, 23, 42, 0.9) 100%
+        );
+        border-left: 4px solid var(--secondary);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      }
+      [data-theme="light"] .schedule-card {
+        background: linear-gradient(
+          100deg,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(248, 250, 252, 0.9) 100%
+        );
+      }
+
+      .champion-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 2px solid var(--accent);
+        position: relative;
+        overflow: hidden;
+      }
+      .champion-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(245, 158, 11, 0.1) 0%,
+          transparent 60%
+        );
+        animation: rotate 10s linear infinite;
+      }
+
+      .ball-container {
+        width: 140px;
+        height: 140px;
+        perspective: 1000px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+      }
+      .soccer-ball-3d {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        animation: rotate3DBall 6s infinite linear;
+        background: radial-gradient(
+          circle at 30% 30%,
+          #ffffff 0%,
+          #dddddd 50%,
+          #111111 100%
+        );
+        border-radius: 50%;
+        box-shadow:
+          inset -10px -10px 30px rgba(0, 0, 0, 0.5),
+          inset 5px 5px 20px rgba(255, 255, 255, 0.3),
+          0 0 50px var(--accent-glow);
+      }
+      .header-ball-3d {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 30% 30%,
+          #ffffff 0%,
+          #e0e0e0 45%,
+          #333333 100%
+        );
+        box-shadow:
+          inset -3px -3px 8px rgba(0, 0, 0, 0.5),
+          inset 2px 2px 4px rgba(255, 255, 255, 0.4),
+          0 0 15px rgba(245, 158, 11, 0.4);
+        position: relative;
+        flex-shrink: 0;
+      }
+      .header-ball-3d::before,
+      .header-ball-3d::after {
+        content: "";
+        position: absolute;
+        background: #111;
+        clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+      }
+      .header-ball-3d::before {
+        width: 12px;
+        height: 12px;
+        top: 6px;
+        left: 13px;
+        transform: rotate(10deg);
+      }
+      .header-ball-3d::after {
+        width: 10px;
+        height: 10px;
+        bottom: 6px;
+        left: 7px;
+        transform: rotate(-20deg);
+      }
+
+      @keyframes rotate3DBall {
+        from {
+          transform: rotateY(0deg) rotateX(10deg);
+        }
+        to {
+          transform: rotateY(360deg) rotateX(10deg);
+        }
+      }
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes confetti-fall {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        top: -10px;
+        z-index: 1000;
+        animation: confetti-fall linear forwards;
+        opacity: 0;
+      }
+
+      .team-photo {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        border: 4px solid var(--accent);
+        object-fit: cover;
+        background-color: #000;
+        box-shadow: 0 0 30px var(--accent-glow);
+        position: relative;
+        z-index: 10;
+      }
+      .trophy-icon {
+        font-size: 60px;
+        filter: drop-shadow(0 0 20px var(--accent-glow));
+        animation: bounce 2s infinite;
+        position: relative;
+        z-index: 10;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in {
+        animation: fadeInUp 0.5s ease forwards;
+      }
+
+      .scorer-input-box {
+        border-top: 1px dashed var(--border);
+        margin-top: 8px;
+        padding-top: 8px;
+      }
+      .scorer-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(6, 182, 212, 0.2);
+        color: var(--secondary);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        margin: 2px;
+      }
+      .scorer-tag button {
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 0 2px;
+        line-height: 1;
+      }
+      .scorer-tag button:hover {
+        color: var(--danger);
+      }
+      .setup-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .award-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 8px;
+        border-radius: 6px;
+      }
+      [data-theme="light"] .award-item {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal-content {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        padding: 20px;
+        transform: scale(0.9);
+        transition: transform 0.3s;
+      }
+      .modal-overlay.active .modal-content {
+        transform: scale(1);
+      }
+
+      .penalty-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+      }
+      .penalty-input {
+        width: 50px;
+        height: 30px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--fg);
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="squad-modal"
+      class="modal-overlay"
+      onclick="if (event.target === this) closeSquadModal();"
+    >
+      <div class="modal-content">
+        <div
+          class="flex justify-between items-center mb-4 border-b border-[--border] pb-2"
+        >
+          <h3 class="font-display text-xl text-[--accent]">
+            Edit Squad: <span id="squad-team-name"></span>
+          </h3>
+          <button
+            onclick="closeSquadModal()"
+            class="text-[--muted] hover:text-[--fg] text-2xl"
+          >
+            &times;
+          </button>
+        </div>
+        <p class="text-xs text-[--muted] mb-2">
+          Masukkan nama pemain, pisahkan dengan koma atau baris baru.
+        </p>
+        <textarea
+          id="squad-textarea"
+          class="input-generic h-48 w-full"
+          placeholder="Contoh: Player 1, Player 2, Player 3..."
+        ></textarea>
+        <div class="flex justify-end gap-2 mt-4">
+          <button onclick="closeSquadModal()" class="header-btn">Cancel</button>
+          <button onclick="saveSquad()" class="header-btn save">
+            Save Squad
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <header
+      class="sticky top-0 z-50 backdrop-blur-xl bg-[--bg]/90 border-b border-[--border]"
+    >
+      <div class="max-w-7xl mx-auto px-4 py-3">
+        <div
+          class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+        >
+          <div class="flex items-center gap-3">
+            <div class="header-ball-3d"></div>
+            <div>
+              <h1
+                class="font-display text-2xl md:text-3xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[--accent] to-yellow-300"
+              >
+                FIFA WORLD CUP 2026
+                <span class="text-base text-[--muted] font-sans italic">
+                  by Jermanto</span
+                >
+              </h1>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 items-center">
+            <button
+              onclick="toggleTheme()"
+              class="header-btn flex items-center gap-1"
+              id="theme-btn"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                ></path>
+              </svg>
+              <span>Theme</span>
+            </button>
+            <button onclick="saveToLocal()" class="header-btn save">
+              Save
+            </button>
+            <button onclick="exportData()" class="header-btn">Export</button>
+            <label class="header-btn cursor-pointer mb-0">
+              Import
+              <input
+                type="file"
+                id="importFile"
+                accept=".json"
+                class="hidden"
+                onchange="importData(event)"
+              />
+            </label>
+            <button
+              onclick="resetAll()"
+              class="text-[--danger] hover:text-white transition-colors text-xs font-medium px-3 py-1 border border-transparent hover:border-[--danger] rounded"
+            >
+              Reset
+            </button>
+            <button
+              onclick="closeApp()"
+              class="text-[--muted] hover:text-white transition-colors text-xs font-medium px-3 py-1 border border-[--border] hover:border-[--fg] rounded bg-black/20"
+            >
+              Close App
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <nav class="max-w-7xl mx-auto px-4 py-4 overflow-x-auto">
+      <div class="flex gap-2 min-w-max">
+        <button
+          class="btn-tab active"
+          data-tab="schedule"
+          onclick="switchTab('schedule')"
+        >
+          Schedule
+        </button>
+        <button class="btn-tab" data-tab="groups" onclick="switchTab('groups')">
+          Group Stage
+        </button>
+        <button class="btn-tab" data-tab="r32" onclick="switchTab('r32')">
+          Round of 32
+        </button>
+        <button class="btn-tab" data-tab="r16" onclick="switchTab('r16')">
+          Round of 16
+        </button>
+        <button class="btn-tab" data-tab="qf" onclick="switchTab('qf')">
+          QF
+        </button>
+        <button class="btn-tab" data-tab="sf" onclick="switchTab('sf')">
+          SF
+        </button>
+        <button class="btn-tab" data-tab="third" onclick="switchTab('third')">
+          3rd Place
+        </button>
+        <button class="btn-tab" data-tab="final" onclick="switchTab('final')">
+          Final
+        </button>
+        <button class="btn-tab" data-tab="stats" onclick="switchTab('stats')">
+          Stats
+        </button>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 pb-12">
+      <section id="section-schedule" class="space-y-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-display text-2xl text-[--fg]">MATCH SCHEDULE</h2>
+        </div>
+        <div id="schedule-container" class="space-y-4"></div>
+      </section>
+
+      <section id="section-groups" class="hidden space-y-6">
+        <div
+          class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 card p-4"
+        >
+          <div>
+            <h2 class="font-display text-xl text-[--fg]">GROUP STAGE</h2>
+            <p class="text-xs text-[--muted] mt-1">
+              Rank 1 & 2 lolos. Rank 3 potensial lolos. Klik tombol 'Sqd' untuk
+              edit pemain.
+            </p>
+          </div>
+          <button
+            onclick="processQualification()"
+            class="btn-primary w-full sm:w-auto text-center"
+          >
+            Update Standings & Qualify
+          </button>
+        </div>
+        <div
+          id="groups-container"
+          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+        ></div>
+      </section>
+
+      <section id="section-r32" class="hidden">
+        <div class="mb-4">
+          <h2 class="font-display text-2xl text-[--fg]">ROUND OF 32</h2>
+        </div>
+        <div
+          id="r32-container"
+          class="grid grid-cols-1 md:grid-cols-2 gap-4"
+        ></div>
+      </section>
+      <section id="section-r16" class="hidden">
+        <div class="mb-4">
+          <h2 class="font-display text-2xl text-[--fg]">ROUND OF 16</h2>
+        </div>
+        <div
+          id="r16-container"
+          class="grid grid-cols-1 md:grid-cols-2 gap-4"
+        ></div>
+      </section>
+      <section id="section-qf" class="hidden">
+        <div class="mb-4">
+          <h2 class="font-display text-2xl text-[--fg]">QUARTER FINAL</h2>
+        </div>
+        <div
+          id="qf-container"
+          class="grid grid-cols-1 md:grid-cols-2 gap-4"
+        ></div>
+      </section>
+      <section id="section-sf" class="hidden">
+        <div class="mb-4">
+          <h2 class="font-display text-2xl text-[--fg]">SEMI FINAL</h2>
+        </div>
+        <div
+          id="sf-container"
+          class="grid grid-cols-1 md:grid-cols-2 gap-4"
+        ></div>
+      </section>
+
+      <section id="section-third" class="hidden">
+        <div class="text-center mb-8 pt-8">
+          <h2 class="font-display text-3xl text-[--secondary]">
+            THIRD PLACE PLAY-OFF
+          </h2>
+        </div>
+        <div id="third-container" class="max-w-lg mx-auto"></div>
+      </section>
+
+      <section id="section-final" class="hidden">
+        <div class="text-center mb-8 pt-8">
+          <h2 class="font-display text-4xl text-[--accent]">FINAL MATCH</h2>
+        </div>
+        <div id="final-container" class="max-w-lg mx-auto"></div>
+        <div
+          id="champion-display"
+          class="hidden mt-12 text-center animate-fade-in relative"
+        >
+          <div class="champion-card card p-10 max-w-lg mx-auto">
+            <p
+              class="text-[--muted] text-xs uppercase tracking-widest mb-4 relative z-10"
+            >
+              World Cup Champion
+            </p>
+            <div class="relative z-10 mb-4">
+              <svg
+                class="w-20 h-20 mx-auto text-[--accent] trophy-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"
+                />
+              </svg>
+            </div>
+            <div class="relative z-10 mb-4 flex flex-col items-center">
+              <img
+                id="champion-photo"
+                src=""
+                alt="Champion"
+                class="team-photo mb-2"
+              />
+              <img
+                id="champion-flag"
+                src=""
+                class="flag-icon-large shadow-lg"
+                alt="Flag"
+              />
+            </div>
+            <h3
+              id="champion-name"
+              class="font-display text-5xl text-[--accent] relative z-10 mb-2"
+            ></h3>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-stats" class="hidden">
+        <h2 class="font-display text-2xl text-[--fg] mb-6">
+          TOURNAMENT AWARDS & STATISTICS
+        </h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="space-y-6">
+            <div class="card p-6">
+              <h3
+                class="font-display text-xl text-[--accent] border-b border-[--border] pb-2 mb-4"
+              >
+                Golden Boot
+              </h3>
+              <div id="top-scorer-list" class="space-y-3"></div>
+            </div>
+            <div class="card p-6">
+              <h3
+                class="font-display text-xl text-[--secondary] border-b border-[--border] pb-2 mb-4"
+              >
+                Golden Glove
+              </h3>
+              <div id="top-clean-sheet-list" class="space-y-3"></div>
+            </div>
+          </div>
+          <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="card p-6">
+              <h3
+                class="font-display text-xl text-[--success] border-b border-[--border] pb-2 mb-4"
+              >
+                Best Offensive
+              </h3>
+              <div id="stat-attack" class="space-y-2"></div>
+            </div>
+            <div class="card p-6">
+              <h3
+                class="font-display text-xl text-[--danger] border-b border-[--border] pb-2 mb-4"
+              >
+                Best Defensive
+              </h3>
+              <div id="stat-defense" class="space-y-2"></div>
+            </div>
+            <div class="card p-6 md:col-span-2">
+              <h3
+                class="font-display text-xl text-[--fg] border-b border-[--border] pb-2 mb-4"
+              >
+                Hat-tricks
+              </h3>
+              <div id="hat-trick-list" class="space-y-2"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const GROUPS = [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+      ];
+      const APP_VERSION = "9.1";
+
+      const COUNTRY_MAP = {
+        indonesia: "id",
+        brazil: "br",
+        argentina: "ar",
+        france: "fr",
+        england: "gb-eng",
+        spain: "es",
+        germany: "de",
+        japan: "jp",
+        belgium: "be",
+        portugal: "pt",
+        netherlands: "nl",
+        usa: "us",
+        uruguay: "uy",
+        croatia: "hr",
+        mexico: "mx",
+        poland: "pl",
+        senegal: "sn",
+        morocco: "ma",
+        switzerland: "ch",
+        serbia: "rs",
+        cameroon: "cm",
+        ghana: "gh",
+        "saudi arabia": "sa",
+        australia: "au",
+        denmark: "dk",
+        tunisia: "tn",
+        iran: "ir",
+        wales: "gb-wls",
+        "costa rica": "cr",
+        "south korea": "kr",
+        qatar: "qa",
+        ecuador: "ec",
+        canada: "ca",
+        italy: "it",
+        colombia: "co",
+        chile: "cl",
+        peru: "pe",
+        nigeria: "ng",
+        egypt: "eg",
+      };
+
+      let state = {
+        groups: {},
+        matches: {
+          groups: {},
+          r32: [],
+          r16: [],
+          qf: [],
+          sf: [],
+          third: [],
+          final: [],
+        },
+        standings: {},
+        scorers: [],
+        squads: {},
+      };
+
+      function getCountryCode(name) {
+        if (!name) return "";
+        const key = name.toLowerCase().trim();
+        if (COUNTRY_MAP[key]) return COUNTRY_MAP[key];
+        for (const k in COUNTRY_MAP) {
+          if (key.includes(k)) return COUNTRY_MAP[k];
+        }
+        return "";
+      }
+      function getFlagHTML(teamObj) {
+        if (!teamObj || !teamObj.code)
+          return `<span class="flag-icon opacity-30"></span>`;
+        return `<img src="https://flagcdn.com/w40/${teamObj.code}.png" class="flag-icon" alt="${teamObj.name}">`;
+      }
+
+      function toggleTheme() {
+        const body = document.body;
+        const isLight = body.getAttribute("data-theme") === "light";
+        body.setAttribute("data-theme", isLight ? "dark" : "light");
+        localStorage.setItem("theme", isLight ? "dark" : "light");
+      }
+      function loadTheme() {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light")
+          document.body.setAttribute("data-theme", "light");
+      }
+
+      function closeApp() {
+        if (confirm("Close application? Make sure you saved progress.")) {
+          window.close();
+          setTimeout(
+            () =>
+              alert(
+                "Please close the tab manually if it doesn't close automatically.",
+              ),
+            100,
+          );
+        }
+      }
+
+      let currentEditingTeam = null;
+      function openSquadEditor(teamName) {
+        currentEditingTeam = teamName;
+        document.getElementById("squad-team-name").innerText = teamName;
+        const players = state.squads[teamName] || [];
+        document.getElementById("squad-textarea").value = players.join(", ");
+        document.getElementById("squad-modal").classList.add("active");
+      }
+      function closeSquadModal() {
+        document.getElementById("squad-modal").classList.remove("active");
+      }
+      function saveSquad() {
+        if (!currentEditingTeam) return;
+        const text = document.getElementById("squad-textarea").value;
+        const players = text
+          .split(/[\n,]+/)
+          .map((p) => p.trim())
+          .filter((p) => p.length > 0);
+        state.squads[currentEditingTeam] = players;
+        closeSquadModal();
+        if (
+          document
+            .querySelector('[data-tab="groups"]')
+            .classList.contains("active")
+        )
+          renderGroups();
+      }
+      function getSquadList(teamName) {
+        return state.squads[teamName] || [];
+      }
+
+      function initState() {
+        GROUPS.forEach((group) => {
+          state.groups[group] = [
+            { name: "Team 1", code: "" },
+            { name: "Team 2", code: "" },
+            { name: "Team 3", code: "" },
+            { name: "Team 4", code: "" },
+          ];
+          state.standings[group] = [];
+          state.matches.groups[group] = [
+            {
+              stage: "Group Stage",
+              round: `Group ${group}`,
+              home: 0,
+              away: 1,
+              homeScore: null,
+              awayScore: null,
+              homeScorers: [],
+              awayScorers: [],
+              date: "",
+              time: "",
+              stadium: "",
+            },
+            {
+              stage: "Group Stage",
+              round: `Group ${group}`,
+              home: 2,
+              away: 3,
+              homeScore: null,
+              awayScore: null,
+              homeScorers: [],
+              awayScorers: [],
+              date: "",
+              time: "",
+              stadium: "",
+            },
+            {
+              stage: "Group Stage",
+              round: `Group ${group}`,
+              home: 0,
+              away: 2,
+              homeScore: null,
+              awayScore: null,
+              homeScorers: [],
+              awayScorers: [],
+              date: "",
+              time: "",
+              stadium: "",
+            },
+            {
+              stage: "Group Stage",
+              round: `Group ${group}`,
+              home: 3,
+              away: 1,
+              homeScore: null,
+              awayScore: null,
+              homeScorers: [],
+              awayScorers: [],
+              date: "",
+              time: "",
+              stadium: "",
+            },
+            {
+              stage: "Group Stage",
+              round: `Group ${group}`,
+              home: 3,
+              away: 0,
+              homeScore: null,
+              awayScore: null,
+              homeScorers: [],
+              awayScorers: [],
+              date: "",
+              time: "",
+              stadium: "",
+            },
+            {
+              stage: "Group Stage",
+              round: `Group ${group}`,
+              home: 1,
+              away: 2,
+              homeScore: null,
+              awayScore: null,
+              homeScorers: [],
+              awayScorers: [],
+              date: "",
+              time: "",
+              stadium: "",
+            },
+          ];
+        });
+
+        const createKoMatch = (round, desc) => ({
+          stage: round.split(" ")[0],
+          round,
+          desc,
+          home: null,
+          away: null,
+          homeScore: null,
+          awayScore: null,
+          homePen: null,
+          awayPen: null,
+          homeScorers: [],
+          awayScorers: [],
+          date: "",
+          time: "",
+          stadium: "",
+        });
+
+        state.matches.r32 = [
+          createKoMatch("Match 73", "A-2 vs B-2"),
+          createKoMatch("Match 74", "E-1 vs 3rd"),
+          createKoMatch("Match 75", "F-1 vs C-2"),
+          createKoMatch("Match 76", "B-1 vs F-2"),
+          createKoMatch("Match 77", "I-1 vs 3rd"),
+          createKoMatch("Match 78", "E-2 vs I-2"),
+          createKoMatch("Match 79", "A-1 vs 3rd"),
+          createKoMatch("Match 80", "L-1 vs 3rd"),
+          createKoMatch("Match 81", "D-1 vs 3rd"),
+          createKoMatch("Match 82", "G-1 vs 3rd"),
+          createKoMatch("Match 83", "K-2 vs L-2"),
+          createKoMatch("Match 84", "H-1 vs J-2"),
+          createKoMatch("Match 85", "B-1 vs 3rd"),
+          createKoMatch("Match 86", "J-1 vs H-2"),
+          createKoMatch("Match 87", "K-1 vs 3rd"),
+          createKoMatch("Match 88", "D-2 vs G-2"),
+        ];
+        state.matches.r16 = [
+          createKoMatch("Match 89", "W 74 vs W 77"),
+          createKoMatch("Match 90", "W 73 vs W 75"),
+          createKoMatch("Match 91", "W 76 vs W 78"),
+          createKoMatch("Match 92", "W 79 vs W 80"),
+          createKoMatch("Match 93", "W 83 vs W 84"),
+          createKoMatch("Match 94", "W 81 vs W 82"),
+          createKoMatch("Match 95", "W 86 vs W 88"),
+          createKoMatch("Match 96", "W 85 vs W 87"),
+        ];
+        state.matches.qf = [
+          createKoMatch("Match 97", "W 89 vs W 90"),
+          createKoMatch("Match 98", "W 93 vs W 94"),
+          createKoMatch("Match 99", "W 91 vs W 92"),
+          createKoMatch("Match 100", "W 95 vs W 96"),
+        ];
+        state.matches.sf = [
+          createKoMatch("Match 101", "SF 1"),
+          createKoMatch("Match 102", "SF 2"),
+        ];
+        state.matches.third = [createKoMatch("Match 103", "3rd Place")];
+        state.matches.final = [createKoMatch("Match 104", "Final")];
+      }
+
+      function saveToLocal() {
+        try {
+          localStorage.setItem("worldCupScoreboardData", JSON.stringify(state));
+          localStorage.setItem("worldCupAppVersion", APP_VERSION);
+          alert("Saved!");
+        } catch (e) {}
+      }
+      function loadFromLocal() {
+        if (localStorage.getItem("worldCupAppVersion") !== APP_VERSION) {
+          localStorage.removeItem("worldCupScoreboardData");
+          return false;
+        }
+        const s = localStorage.getItem("worldCupScoreboardData");
+        if (s) {
+          try {
+            state = JSON.parse(s);
+            if (!state.squads) state.squads = {};
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+        return false;
+      }
+      function exportData() {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(
+          new Blob([JSON.stringify(state, null, 2)], {
+            type: "application/json",
+          }),
+        );
+        a.download = "wc_2026.json";
+        a.click();
+      }
+      function importData(e) {
+        const f = e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => {
+          try {
+            state = JSON.parse(ev.target.result);
+            localStorage.setItem("worldCupAppVersion", APP_VERSION);
+            renderAll();
+            alert("Imported!");
+          } catch (err) {
+            alert("Error");
+          }
+        };
+        r.readAsText(f);
+      }
+      function resetAll() {
+        if (confirm("Reset?")) {
+          localStorage.clear();
+          location.reload();
+        }
+      }
+
+      function renderAll() {
+        renderGroups();
+        ["r32", "r16", "qf", "sf", "third", "final"].forEach((s) =>
+          renderKnockout(s),
+        );
+        renderStats();
+        renderSchedule();
+        checkChampion();
+      }
+
+      function updateTeamData(g, i, v) {
+        const t = state.groups[g][i];
+        const o = t.name;
+        t.name = v;
+        t.code = getCountryCode(v);
+        const st = state.standings[g].find((s) => s.team === o);
+        if (st) {
+          st.team = v;
+          st.code = t.code;
+        }
+        renderGroupCard(g);
+      }
+
+      function renderGroupCard(g) {
+        const t = state.groups[g];
+        const s = state.standings[g];
+        const m = state.matches.groups[g];
+        const c = document.getElementById(`group-card-${g}`);
+        const setup = `<div class="setup-grid mb-3">${t
+          .map(
+            (
+              x,
+              i,
+            ) => `<div class="flex items-center gap-2 bg-black/20 rounded p-1">
+${getFlagHTML(x)}<input class="input-generic" value="${x.name}" onchange="updateTeamData('${g}', ${i}, this.value)">
+<button onclick="openSquadEditor('${x.name}')" class="btn-icon text-xs" title="Edit Squad">Sqd</button>
+</div>`,
+          )
+          .join("")}</div>`;
+
+        const matches = m
+          .map((x, i) => {
+            const h = t[x.home];
+            const a = t[x.away];
+            const hList = getSquadList(h.name);
+            const aList = getSquadList(a.name);
+            const makeInput = (list, side) =>
+              list.length > 0
+                ? `<select class="input-generic text-xs" onchange="if(this.value) addScorer('groups', '${g}', ${i}, '${side}', this.value, this)"><option value="">+ Scorer</option>${list.map((p) => `<option value="${p}">${p}</option>`).join("")}</select>`
+                : `<input type="text" placeholder="Scorer" class="input-generic text-xs" onkeypress="if(event.key==='Enter') addScorer('groups', '${g}', ${i}, '${side}', this.value, this)">`;
+
+            return `<div class="bg-black/10 rounded-lg p-2 text-xs mb-2">
+<div class="flex justify-between mb-1 text-[--muted] items-center">
+<span class="uppercase text-[10px] font-bold">M ${i + 1}</span>
+<div class="flex gap-1"><input type="date" class="input-schedule" value="${x.date}" onchange="updateSch('groups', '${g}', ${i}, 'date', this.value)"><input type="time" class="input-schedule" value="${x.time}" onchange="updateSch('groups', '${g}', ${i}, 'time', this.value)"></div>
+</div>
+<div class="mb-2"><input class="input-stadium" placeholder="Stadium" value="${x.stadium || ""}" onchange="updateSch('groups', '${g}', ${i}, 'stadium', this.value)"></div>
+<div class="flex items-center gap-2 mb-2">
+<div class="flex-1 flex items-center justify-end gap-2 truncate"><span class="font-semibold">${h.name}</span>${getFlagHTML(h)}</div>
+<div class="flex items-center gap-1 bg-black/30 p-1 rounded">
+<input type="number" class="input-score w-8 h-7 text-xs" value="${x.homeScore != null ? x.homeScore : ""}" onchange="updateScore('groups', '${g}', ${i}, 'home', this.value)">
+<span class="text-[--muted]">-</span>
+<input type="number" class="input-score w-8 h-7 text-xs" value="${x.awayScore != null ? x.awayScore : ""}" onchange="updateScore('groups', '${g}', ${i}, 'away', this.value)">
+</div>
+<div class="flex-1 flex items-center gap-2 truncate">${getFlagHTML(a)}<span class="font-semibold">${a.name}</span></div>
+</div>
+<div class="scorer-input-box">
+<div class="flex gap-2 mb-1">
+<div class="flex-1 flex-wrap">${x.homeScorers.map((p) => `<span class="scorer-tag">${p} <button onclick="remScorer('groups', '${g}', ${i}, 'home', '${p}')">&times;</button></span>`).join("")}</div>
+<div class="flex-1 flex-wrap flex justify-end">${x.awayScorers.map((p) => `<span class="scorer-tag">${p} <button onclick="remScorer('groups', '${g}', ${i}, 'away', '${p}')">&times;</button></span>`).join("")}</div>
+</div>
+<div class="flex gap-2">
+<div class="flex-1">${makeInput(hList, "home")}</div>
+<div class="flex-1">${makeInput(aList, "away")}</div>
+</div>
+</div>
+</div>`;
+          })
+          .join("");
+
+        const stand = `<div class="standing-row header"><span>#</span><span>Team</span><span>P</span><span>W</span><span>D</span><span>L</span><span>Pts</span></div>
+${s
+  .map(
+    (x, i) => `<div class="standing-row ${i < 2 ? "qualified" : ""} mt-1">
+<span class="font-bold text-xs ${i < 2 ? "text-[--success]" : "text-[--muted]"}">${i + 1}</span>
+<div class="team-name-container truncate">${getFlagHTML(x)}<span class="font-semibold text-xs truncate">${x.team}</span></div>
+<span class="text-center text-[--muted]">${x.played}</span><span class="text-center text-[--muted]">${x.won}</span>
+<span class="text-center text-[--muted]">${x.drawn}</span><span class="text-center text-[--muted]">${x.lost}</span>
+<span class="text-center font-bold ${i < 2 ? "text-[--accent]" : "text-[--fg]"}">${x.points}</span>
+</div>`,
+  )
+  .join("")}`;
+
+        c.innerHTML = `<div class="flex items-center justify-between mb-3 pb-2 border-b border-[--border]"><span class="bg-gradient-to-r from-[--accent] to-yellow-300 text-[--bg] font-bold px-3 py-1 rounded text-xs tracking-wider">GROUP ${g}</span></div>${setup}<div class="space-y-3 mb-4">${matches}</div><div class="border-t border-[--border] pt-3">${stand}</div>`;
+      }
+
+      function renderGroups() {
+        document.getElementById("groups-container").innerHTML = GROUPS.map(
+          (g) =>
+            `<div id="group-card-${g}" class="card p-4 animate-fade-in"></div>`,
+        ).join("");
+        GROUPS.forEach((g) => renderGroupCard(g));
+      }
+
+      function renderKnockoutMatch(m, idx, stage) {
+        const h = m.home;
+        const a = m.away;
+        const hn = h ? h.name : "TBD";
+        const an = a ? a.name : "TBD";
+        const isDraw =
+          m.homeScore !== null &&
+          m.awayScore !== null &&
+          m.homeScore === m.awayScore;
+        const showPen = isDraw && stage !== "groups";
+
+        let winner = null;
+        if (m.homeScore !== null && m.awayScore !== null) {
+          if (m.homeScore > m.awayScore) winner = h;
+          else if (m.awayScore > m.homeScore) winner = a;
+          else if (showPen) {
+            if (m.homePen > m.awayPen) winner = h;
+            else if (m.awayPen > m.homePen) winner = a;
+          }
+        }
+
+        const hList = getSquadList(hn);
+        const aList = getSquadList(an);
+        const makeInput = (list, side) =>
+          list.length > 0
+            ? `<select class="input-generic text-xs" onchange="if(this.value) addScorer('${stage}', null, ${idx}, '${side}', this.value, this)"><option value="">+ Scorer</option>${list.map((p) => `<option value="${p}">${p}</option>`).join("")}</select>`
+            : `<input type="text" placeholder="Scorer" class="input-generic text-xs" onkeypress="if(event.key==='Enter') addScorer('${stage}', null, ${idx}, '${side}', this.value, this)">`;
+
+        return `<div class="card match-card p-4">
+<div class="flex justify-between mb-3 text-[--muted] items-center border-b border-[--border] pb-2">
+<div><span class="text-xs font-bold uppercase tracking-wider text-[--secondary]">${m.round}</span><span class="text-[10px] block italic">${m.desc}</span></div>
+<div class="flex gap-1"><input type="date" class="input-schedule" value="${m.date}" onchange="updateSch('${stage}', null, ${idx}, 'date', this.value)"><input type="time" class="input-schedule" value="${m.time}" onchange="updateSch('${stage}', null, ${idx}, 'time', this.value)"></div>
+</div>
+<div class="mb-3"><input class="input-stadium" placeholder="Stadium" value="${m.stadium || ""}" onchange="updateSch('${stage}', null, ${idx}, 'stadium', this.value)"></div>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="flex-1 flex items-center justify-end gap-2 truncate"><span class="font-semibold truncate ${winner === h ? "text-[--accent]" : ""}">${hn}</span>${h ? getFlagHTML(h) : ""}</div>
+<input type="number" class="input-score" value="${m.homeScore != null ? m.homeScore : ""}" onchange="updateScore('${stage}', null, ${idx}, 'home', this.value)" ${!h ? "disabled" : ""}>
+</div>
+<div class="border-t border-dashed border-[--border] flex items-center justify-center"><span class="text-[--muted] text-xs bg-[--card] px-2 -mt-2">VS</span></div>
+<div class="flex items-center gap-3">
+<div class="flex-1 flex items-center justify-end gap-2 truncate"><span class="font-semibold truncate ${winner === a ? "text-[--accent]" : ""}">${an}</span>${a ? getFlagHTML(a) : ""}</div>
+<input type="number" class="input-score" value="${m.awayScore != null ? m.awayScore : ""}" onchange="updateScore('${stage}', null, ${idx}, 'away', this.value)" ${!a ? "disabled" : ""}>
+</div>
+</div>
+
+${
+  showPen
+    ? `
+<div class="penalty-section mt-3">
+<span class="text-[--muted] text-xs">PEN:</span>
+<input type="number" class="penalty-input" value="${m.homePen || ""}" onchange="updatePen('${stage}', ${idx}, 'home', this.value)" placeholder="0">
+<span class="text-[--muted]">-</span>
+<input type="number" class="penalty-input" value="${m.awayPen || ""}" onchange="updatePen('${stage}', ${idx}, 'away', this.value)" placeholder="0">
+</div>`
+    : ""
+}
+
+<div class="scorer-input-box mt-3">
+<div class="flex gap-2 mb-1">
+<div class="flex-1 flex-wrap">${m.homeScorers.map((p) => `<span class="scorer-tag">${p} <button onclick="remScorer('${stage}', null, ${idx}, 'home', '${p}')">&times;</button></span>`).join("")}</div>
+<div class="flex-1 flex-wrap flex justify-end">${m.awayScorers.map((p) => `<span class="scorer-tag">${p} <button onclick="remScorer('${stage}', null, ${idx}, 'away', '${p}')">&times;</button></span>`).join("")}</div>
+</div>
+<div class="flex gap-2">
+<div class="flex-1">${h ? makeInput(hList, "home") : ""}</div>
+<div class="flex-1">${a ? makeInput(aList, "away") : ""}</div>
+</div>
+</div>
+</div>`;
+      }
+      function renderKnockout(s) {
+        document.getElementById(`${s}-container`).innerHTML = state.matches[s]
+          .map((m, i) => renderKnockoutMatch(m, i, s))
+          .join("");
+      }
+
+      function updateSch(s, g, i, f, v) {
+        const m = g ? state.matches.groups[g][i] : state.matches[s][i];
+        if (m) m[f] = v;
+      }
+      function updatePen(s, i, side, v) {
+        state.matches[s][i][side + "Pen"] = v === "" ? null : parseInt(v);
+        advanceWinner(s, i);
+        renderKnockout(s);
+        if (nextMap[s]) renderKnockout(nextMap[s]);
+        if (s === "sf") renderKnockout("third");
+        renderStats();
+        renderSchedule();
+      }
+
+      function updateScore(s, g, i, side, v) {
+        const sc = v === "" ? null : parseInt(v) || 0;
+        if (g) {
+          state.matches.groups[g][i][side + "Score"] = sc;
+          calcStand(g);
+          renderGroupCard(g);
+        } else {
+          state.matches[s][i][side + "Score"] = sc;
+          state.matches[s][i].homePen = null;
+          state.matches[s][i].awayPen = null;
+          advanceWinner(s, i);
+          renderKnockout(s);
+          if (nextMap[s]) renderKnockout(nextMap[s]);
+          if (s === "sf") renderKnockout("third");
+          if (s === "final") checkChampion();
+        }
+        renderStats();
+        renderSchedule();
+      }
+      function addScorer(s, g, i, side, name, el) {
+        if (!name) return;
+        const m = g ? state.matches.groups[g][i] : state.matches[s][i];
+        const t =
+          side === "home"
+            ? g
+              ? state.groups[g][m.home]
+              : m.home
+            : g
+              ? state.groups[g][m.away]
+              : m.away;
+        m[side + "Scorers"].push(name);
+        updateScorers(name, t.name, 1);
+        if (el) el.value = "";
+        if (g) renderGroupCard(g);
+        else renderKnockout(s);
+        renderStats();
+      }
+      function remScorer(s, g, i, side, name) {
+        const m = g ? state.matches.groups[g][i] : state.matches[s][i];
+        const t =
+          side === "home"
+            ? g
+              ? state.groups[g][m.home]
+              : m.home
+            : g
+              ? state.groups[g][m.away]
+              : m.away;
+        m[side + "Scorers"] = m[side + "Scorers"].filter((x) => x !== name);
+        updateScorers(name, t.name, -1);
+        if (g) renderGroupCard(g);
+        else renderKnockout(s);
+        renderStats();
+      }
+      function updateScorers(n, t, c) {
+        const e = state.scorers.find((s) => s.name === n && s.team === t);
+        if (e) {
+          e.goals += c;
+          if (e.goals <= 0)
+            state.scorers = state.scorers.filter((x) => x !== e);
+        } else if (c > 0) state.scorers.push({ name: n, team: t, goals: c });
+        state.scorers.sort((a, b) => b.goals - a.goals);
+      }
+
+      function calcStand(g) {
+        const t = state.groups[g];
+        const m = state.matches.groups[g];
+        const s = {};
+        t.forEach(
+          (x) =>
+            (s[x.name] = {
+              team: x.name,
+              code: x.code,
+              played: 0,
+              won: 0,
+              drawn: 0,
+              lost: 0,
+              gd: 0,
+              points: 0,
+              gf: 0,
+              ga: 0,
+            }),
+        );
+        m.forEach((x) => {
+          if (x.homeScore !== null && x.awayScore !== null) {
+            const h = s[t[x.home].name];
+            const a = s[t[x.away].name];
+            h.played++;
+            a.played++;
+            h.gf += x.homeScore;
+            h.ga += x.awayScore;
+            a.gf += x.awayScore;
+            a.ga += x.homeScore;
+            const d = x.homeScore - x.awayScore;
+            h.gd += d;
+            a.gd -= d;
+            if (d > 0) {
+              h.won++;
+              h.points += 3;
+              a.lost++;
+            } else if (d < 0) {
+              a.won++;
+              a.points += 3;
+              h.lost++;
+            } else {
+              h.drawn++;
+              a.drawn++;
+              h.points++;
+              a.points++;
+            }
+          }
+        });
+        state.standings[g] = Object.values(s).sort(
+          (a, b) => b.points - a.points || b.gd - a.gd,
+        );
+      }
+
+      const nextMap = { r32: "r16", r16: "qf", qf: "sf", sf: "final" };
+
+      function advanceWinner(s, i) {
+        const m = state.matches[s][i];
+        if (m.homeScore === null || m.awayScore === null) return;
+        let w = null,
+          l = null;
+        if (m.homeScore > m.awayScore) {
+          w = m.home;
+          l = m.away;
+        } else if (m.awayScore > m.homeScore) {
+          w = m.away;
+          l = m.home;
+        } else {
+          if (m.homePen != null && m.awayPen != null) {
+            if (m.homePen > m.awayPen) {
+              w = m.home;
+              l = m.away;
+            } else if (m.awayPen > m.homePen) {
+              w = m.away;
+              l = m.home;
+            }
+          }
+        }
+
+        if (s === "sf") {
+          if (w) {
+            state.matches.final[0].home =
+              i === 0 ? w : state.matches.final[0].home;
+            state.matches.final[0].away =
+              i === 1 ? w : state.matches.final[0].away;
+          }
+          if (l) {
+            state.matches.third[0].home =
+              i === 0 ? l : state.matches.third[0].home;
+            state.matches.third[0].away =
+              i === 1 ? l : state.matches.third[0].away;
+          }
+          return;
+        }
+        const n = nextMap[s];
+        if (!n || !w) return;
+        const nIdx = Math.floor(i / 2);
+        const pos = i % 2 === 0 ? "home" : "away";
+        state.matches[n][nIdx][pos] = w;
+        state.matches[n][nIdx][pos + "Score"] = null;
+        state.matches[n][nIdx][pos + "Pen"] = null;
+        state.matches[n][nIdx][pos + "Scorers"] = [];
+      }
+
+      function processQualification() {
+        GROUPS.forEach((g) => calcStand(g));
+        const w = {},
+          r = {},
+          th = {};
+        GROUPS.forEach((g) => {
+          const s = state.standings[g];
+          if (s[0]) w[g] = state.groups[g].find((t) => t.name === s[0].team);
+          if (s[1]) r[g] = state.groups[g].find((t) => t.name === s[1].team);
+          if (s[2]) th[g] = state.groups[g].find((t) => t.name === s[2].team);
+        });
+        const get = (o, k) => o[k] || { name: "TBD", code: "" };
+        const getTh = (arr) => {
+          for (let g of arr) if (th[g]) return th[g];
+          return { name: "TBD", code: "" };
+        };
+
+        const x = state.matches.r32;
+        x[0].home = get(r, "A");
+        x[0].away = get(r, "B");
+        x[1].home = get(w, "E");
+        x[1].away = getTh(["A", "B", "C", "D", "F"]);
+        x[2].home = get(w, "F");
+        x[2].away = get(r, "C");
+        x[3].home = get(w, "B");
+        x[3].away = get(r, "F");
+        x[4].home = get(w, "I");
+        x[4].away = getTh(["C", "D", "F", "G", "H"]);
+        x[5].home = get(r, "E");
+        x[5].away = get(r, "I");
+        x[6].home = get(w, "A");
+        x[6].away = getTh(["C", "E", "F", "H", "I"]);
+        x[7].home = get(w, "L");
+        x[7].away = getTh(["E", "H", "I", "J", "K"]);
+        x[8].home = get(w, "D");
+        x[8].away = getTh(["B", "E", "F", "I", "J"]);
+        x[9].home = get(w, "G");
+        x[9].away = getTh(["A", "E", "H", "I", "J"]);
+        x[10].home = get(r, "K");
+        x[10].away = get(r, "L");
+        x[11].home = get(w, "H");
+        x[11].away = get(r, "J");
+        x[12].home = get(w, "B");
+        x[12].away = getTh(["E", "F", "G", "I", "J"]);
+        x[13].home = get(w, "J");
+        x[13].away = get(r, "H");
+        x[14].home = get(w, "K");
+        x[14].away = getTh(["D", "E", "I", "J", "L"]);
+        x[15].home = get(r, "D");
+        x[15].away = get(r, "G");
+
+        ["r16", "qf", "sf", "third", "final"].forEach((st) => {
+          state.matches[st].forEach((m) => {
+            m.home = null;
+            m.away = null;
+            m.homeScore = null;
+            m.awayScore = null;
+            m.homePen = null;
+            m.awayPen = null;
+          });
+        });
+        document.getElementById("champion-display").classList.add("hidden");
+        renderAll();
+        alert("Qualified!");
+      }
+
+      function renderSchedule() {
+        const c = document.getElementById("schedule-container");
+        let all = [];
+        GROUPS.forEach((g) =>
+          state.matches.groups[g].forEach((m, i) => {
+            if (state.groups[g])
+              all.push({
+                ...m,
+                home: state.groups[g][m.home],
+                away: state.groups[g][m.away],
+              });
+          }),
+        );
+        ["r32", "r16", "qf", "sf", "third", "final"].forEach((s) =>
+          state.matches[s].forEach((m) => all.push(m)),
+        );
+
+        const formatScore = (m) => {
+          if (m.homeScore == null) return "VS";
+          let s = `${m.homeScore} - ${m.awayScore}`;
+          if (m.homePen != null) s += ` (${m.homePen}-${m.awayPen} Pen)`;
+          return s;
+        };
+
+        const upc = all
+          .filter((m) => m.homeScore == null && m.home)
+          .sort((a, b) =>
+            `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`),
+          );
+        const ply = all
+          .filter((m) => m.homeScore != null)
+          .sort((a, b) =>
+            `${b.date} ${b.time}`.localeCompare(`${a.date} ${a.time}`),
+          );
+
+        const card = (
+          m,
+        ) => `<div class="schedule-card card p-4 mb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex-1 text-xs">
+<div class="font-bold text-[--secondary]">${m.round}</div>
+<div class="text-[10px] text-[--accent]">${m.stadium || "Stadium TBD"}</div>
+<div class="mt-1">
+<span class="text-[--fg]">${m.date || "Date TBD"}</span>
+<span class="ml-1">${m.time || ""}</span>
+</div>
+</div>
+<div class="flex-1 flex items-center justify-between bg-black/10 p-3 rounded-lg">
+<div class="flex items-center gap-2 font-semibold">${getFlagHTML(m.home)}<span>${m.home.name}</span></div>
+<div class="text-lg font-bold px-4 text-[--accent]">${formatScore(m)}</div>
+<div class="flex items-center gap-2 font-semibold"><span>${m.away.name}</span>${getFlagHTML(m.away)}</div>
+</div>
+</div>`;
+
+        c.innerHTML = `<h3 class="font-display text-xl text-[--secondary] mb-3">Upcoming</h3>${upc.length ? upc.map(card).join("") : '<p class="text-[--muted] text-sm">None</p>'}<h3 class="font-display text-xl mt-8 mb-3 text-[--muted]">Results</h3>${ply.length ? ply.map(card).join("") : '<p class="text-[--muted] text-sm">None</p>'}`;
+      }
+
+      function renderStats() {
+        const sl = document.getElementById("top-scorer-list");
+        sl.innerHTML = state.scorers.length
+          ? state.scorers
+              .slice(0, 5)
+              .map(
+                (s, i) =>
+                  `<div class="award-item"><div class="flex items-center gap-3"><span class="font-display text-lg w-6 text-center ${i === 0 ? "text-[--accent]" : "text-[--muted]"}">${i + 1}</span><div><div class="font-semibold text-sm">${s.name}</div><div class="text-xs text-[--muted] flex items-center gap-1">${getFlagHTML({ name: s.team, code: getCountryCode(s.team) })} ${s.team}</div></div></div><div class="font-display text-2xl text-[--accent]">${s.goals}</div></div>`,
+              )
+              .join("")
+          : '<p class="text-[--muted] text-sm">No data</p>';
+
+        const ts = {};
+        const init = (n, c) => {
+          if (!n || n.startsWith("TBD")) return;
+          if (!ts[n]) ts[n] = { name: n, code: c, gf: 0, ga: 0, cs: 0, pl: 0 };
+        };
+        const add = (n, gf, ga) => {
+          if (!ts[n]) return;
+          ts[n].gf += gf;
+          ts[n].ga += ga;
+          ts[n].pl++;
+          if (ga === 0) ts[n].cs++;
+        };
+
+        GROUPS.forEach((g) =>
+          state.matches.groups[g].forEach((m) => {
+            if (m.homeScore != null && state.groups[g][m.home]) {
+              const h = state.groups[g][m.home],
+                a = state.groups[g][m.away];
+              init(h.name, h.code);
+              init(a.name, a.code);
+              add(h.name, m.homeScore, m.awayScore);
+              add(a.name, m.awayScore, m.homeScore);
+            }
+          }),
+        );
+        ["r32", "r16", "qf", "sf", "third", "final"].forEach((s) =>
+          state.matches[s].forEach((m) => {
+            if (m.homeScore != null && m.home) {
+              init(m.home.name, m.home.code);
+              init(m.away.name, m.away.code);
+              add(m.home.name, m.homeScore, m.awayScore);
+              add(m.away.name, m.awayScore, m.homeScore);
+            }
+          }),
+        );
+        const arr = Object.values(ts);
+
+        document.getElementById("stat-attack").innerHTML = arr
+          .sort((a, b) => b.gf - a.gf)
+          .slice(0, 5)
+          .map(
+            (t) =>
+              `<div class="award-item"><div class="flex items-center gap-2">${getFlagHTML(t)}<span class="font-semibold text-xs">${t.name}</span></div><span class="font-bold text-[--success]">${t.gf} G</span></div>`,
+          )
+          .join("");
+        document.getElementById("stat-defense").innerHTML = arr
+          .filter((t) => t.pl > 0)
+          .sort((a, b) => a.ga - b.ga)
+          .slice(0, 5)
+          .map(
+            (t) =>
+              `<div class="award-item"><div class="flex items-center gap-2">${getFlagHTML(t)}<span class="font-semibold text-xs">${t.name}</span></div><span class="font-bold text-[--danger]">${t.ga} Cn</span></div>`,
+          )
+          .join("");
+        document.getElementById("top-clean-sheet-list").innerHTML = arr
+          .filter((t) => t.pl > 0)
+          .sort((a, b) => b.cs - a.cs)
+          .slice(0, 5)
+          .map(
+            (t) =>
+              `<div class="award-item"><div class="flex items-center gap-3"><span class="font-display text-lg w-6 text-center text-[--secondary]">${t.cs}</span><div class="flex items-center gap-2">${getFlagHTML(t)}<span class="font-semibold text-sm">${t.name}</span></div></div></div>`,
+          )
+          .join("");
+
+        let ht = [];
+        const check = (m, h, a) => {
+          const cnt = (s, tn) => {
+            const c = {};
+            s.forEach((n) => (c[n] = (c[n] || 0) + 1));
+            return Object.entries(c).map(([n, c]) => ({
+              name: n,
+              team: tn,
+              c,
+            }));
+          };
+          if (!m.homeScorers) return;
+          cnt(m.homeScorers, h.name)
+            .concat(cnt(m.awayScorers, a.name))
+            .forEach((p) => {
+              if (p.c >= 3) ht.push(p);
+            });
+        };
+        GROUPS.forEach((g) =>
+          state.matches.groups[g].forEach((m) => {
+            if (m.homeScore != null)
+              check(m, state.groups[g][m.home], state.groups[g][m.away]);
+          }),
+        );
+        ["r32", "r16", "qf", "sf", "third", "final"].forEach((s) =>
+          state.matches[s].forEach((m) => {
+            if (m.homeScore != null) check(m, m.home, m.away);
+          }),
+        );
+        document.getElementById("hat-trick-list").innerHTML = ht.length
+          ? ht
+              .map(
+                (p) =>
+                  `<div class="award-item"><div><span class="font-semibold text-[--accent]">${p.name}</span> <span class="text-[--muted]">(${p.team})</span></div><span class="font-bold text-[--success]">${p.c} Goals</span></div>`,
+              )
+              .join("")
+          : '<p class="text-[--muted] text-xs">None</p>';
+      }
+
+      function checkChampion() {
+        const m = state.matches.final[0];
+        const d = document.getElementById("champion-display");
+        if (m.homeScore != null && m.awayScore != null) {
+          let w = null;
+          if (
+            m.homeScore > m.awayScore ||
+            (m.homeScore === m.awayScore && m.homePen > m.awayPen)
+          )
+            w = m.home;
+          else if (
+            m.awayScore > m.homeScore ||
+            (m.homeScore === m.awayScore && m.awayPen > m.homePen)
+          )
+            w = m.away;
+          if (w) {
+            document.getElementById("champion-name").textContent = w.name;
+            document.getElementById("champion-photo").src =
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(w.name)}&size=200&background=d4a839&color=0a0f0d&bold=true&format=svg`;
+            const f = document.getElementById("champion-flag");
+            if (w.code) {
+              f.src = `https://flagcdn.com/w80/${w.code}.png`;
+              f.classList.remove("hidden");
+            } else f.classList.add("hidden");
+            d.classList.remove("hidden");
+          }
+        } else d.classList.add("hidden");
+      }
+
+      function switchTab(t) {
+        document
+          .querySelectorAll(".btn-tab")
+          .forEach((b) => b.classList.toggle("active", b.dataset.tab === t));
+        document
+          .querySelectorAll('section[id^="section-"]')
+          .forEach((s) => s.classList.add("hidden"));
+        document.getElementById(`section-${t}`).classList.remove("hidden");
+        if (t === "groups") renderGroups();
+        else if (t === "schedule") renderSchedule();
+        else if (t === "stats") renderStats();
+        else if (["r32", "r16", "qf", "sf", "third", "final"].includes(t))
+          renderKnockout(t);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadTheme();
+        if (!loadFromLocal()) initState();
+        renderAll();
+      });
+    </script>
+  </body>
+</html>
